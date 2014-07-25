@@ -14,6 +14,7 @@ object BoardParams {
 
 class Board (gameBoard: Vector[Vector[Char]]) {
   def this() = this(Vector.fill(SIZE, SIZE)(' '))
+  def this(s: String) = this(Vector(s.split("\n").map(str => Vector(str: _*)): _*))
 
   def checkArgs(x: Int, y: Int) = {
     if (x < 0 || x >= SIZE) throw new IllegalArgumentException("X dimension out of range")
