@@ -10,10 +10,14 @@ import scala.collection.immutable.VectorBuilder
 
 object BoardParams {
   val SIZE = 3
+  val SPACE = ' '
 }
 
+class SquareAlreadyOccupiedException extends RuntimeException
+
 class Board (gameBoard: Vector[Vector[Char]]) {
-  def this() = this(Vector.fill(SIZE, SIZE)(' '))
+
+  def this() = this(Vector.fill(SIZE, SIZE)(SPACE))
   def this(s: String) = this(Vector(s.split("\n").map(str => Vector(str: _*)): _*))
 
   def checkArgs(x: Int, y: Int) = {
@@ -21,18 +25,24 @@ class Board (gameBoard: Vector[Vector[Char]]) {
     if (y < 0 || y >= SIZE) throw new IllegalArgumentException("Y dimension out of range")
   }
 
-  def updated(x:Int, y:Int, ch: Char) = {
+  def updated(address: (Int, Int), ch: Char):Board = updated(address._1, address._2, ch)
+  def updated(x:Int, y:Int, ch: Char):Board = {
     checkArgs(x, y)
-    val updated  = gameBoard.zipWithIndex.map {
+    if (gameBoard(y)(x) != SPACE) {
+      //throw new IllegalArgumentException(s"Square at ($x, $y) is already set to " + gameBoard(x)(y))
+      throw new SquareAlreadyOccupiedException
+    }
+
+    val updatedBoard  = gameBoard.zipWithIndex.map {
       case (row, index:Int) => {
         if (index == y ) row updated(x, ch) else row
       }
     }
-    new Board(updated)
+    new Board(updatedBoard)
   }
 
   def apply(x:Int, y:Int): Char = {
     checkArgs(x, y)
-    gameBoard(x)(y)
+    gameBoard(y)(x)
   }
 }

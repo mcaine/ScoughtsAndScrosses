@@ -8,16 +8,16 @@ import com.mikeycaine.BoardParams._
 object BoardPrinter {
   def show(board: Board) = {
 
-    for (i <- 0 until SIZE) {
-      for (j <- 0 until SIZE) {
-        printf(board(i, j).toString)
-        if (j < SIZE - 1) {
+    for (j <- 0 until SIZE) {
+      for (i <- 0 until SIZE) {
+        printf(board(i,j).toString)
+        if (i < SIZE - 1) {
           print(" |")
         } else {
           println
         }
       }
-      if (i < SIZE -1 ) {
+      if (j < SIZE -1 ) {
         println("---------")
       }
     }

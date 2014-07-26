@@ -24,7 +24,40 @@ class GameStateTest extends FunSuite {
     assert(state.toGo == 'O')
   }
 
-  test("hasWon works with the first column") {
+  test("Can't set a square more than once") {
+    var state = new GameState
+    state = state.updated(0,0)
+    intercept[SquareAlreadyOccupiedException] {
+      state = state.updated(0, 0)
+    }
+  }
+
+  test("Can't get a winner if there is no winner") {
+
+  }
+
+  test("isUnWone") {
+    var won = new GameState(new Board(
+      """X..
+        |X..
+        |X..
+      """.stripMargin
+    ), 'O')
+    assert(won.isWon)
+
+    var unwon = new GameState(new Board(
+      """X..
+        |X..
+        |...
+      """.stripMargin
+    ), 'O')
+    assert(!unwon.isWon)
+
+
+
+  }
+
+  test("hasWone works with the first column") {
     var state = new GameState(new Board(
     """X..
       |X..
@@ -34,6 +67,7 @@ class GameStateTest extends FunSuite {
 
     assert(state.hasWon('X'))
     assert(!state.hasWon('O'))
+    assert(state.isWon)
   }
 
   test("hasWon works with the second column") {
@@ -106,6 +140,7 @@ class GameStateTest extends FunSuite {
 
     assert(state.hasWon('X'))
     assert(!state.hasWon('O'))
+
 
   }
 

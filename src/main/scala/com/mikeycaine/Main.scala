@@ -23,23 +23,40 @@ object Main extends App {
 
   def askHeadsOrTails(): CoinToss = {
     var choice: Option[CoinToss] = None
-    do {
+    while (choice == None) {
       val choiceText = Console.readLine("Heads or Tails?")
-      val firstChar = choiceText.charAt(0).toUpper
+      val firstChar = if (choiceText.length > 0) choiceText.charAt(0).toUpper else ' '
       if (firstChar == 'H') {
         choice = Some(Heads)
       } else if (firstChar == 'T') {
         choice = Some(Tails)
       }
-    } while (choice == None)
+    }
     println("You chose " + choice.get)
     choice.get
   }
 
-  def needlePlayer() = {
+  def askPlayersMove(): (Int,Int) = {
+    val MovePattern = """\(([012]),([012])\)""".r
+    var move:Option[(Int, Int)] = None
+    while (move == None) {
+      val moveText = Console.readLine("What move (x,y)?")
+      moveText match {
+        case MovePattern(x,y) => {
+          move = Some((x.toInt,y.toInt))
+        }
+        case _ => println("I don't understand")
+      }
+    }
+    println("You chose " + move.get)
+    move.get
+  }
+
+  def needlePlayer = {
+    println("Bad luck old chap!")
     val possibles = List(
       "I've been practising, so watch out!",
-      "I know I've made some very poor decisions recently, but I can give you my complete assurance that my playing will be back to normal",
+      "I know I've made some very poor decisions recently, but I can give you my complete assurance that my playing will be back to normal!",
       "You is goin DOOOOOWWWWWNNNN",
       "I think going first is an advantage in this game"
     )
@@ -47,19 +64,13 @@ object Main extends App {
       val index = Random.nextInt(possibles.length)
       println(possibles(index))
     }
-  }
-
-  def askPlayersMove() = {
-    println("What move (x,y)?")
-    var x = -1
-    var y = -1
-
+    println("Here goes!")
   }
 
   println(
     """Scoughts & Scrosses!
       |Would you like to play a game? Of course you would! Lets get to it!
-      |Let's toss a coin to see who goes first. Heads or tails?""".stripMargin)
+      |Let's toss a coin to see who goes first.""".stripMargin)
 
   val playersChoice = askHeadsOrTails()
   val coinSays = tossOfAFairCoin()
@@ -68,22 +79,37 @@ object Main extends App {
 
   if (playersChoice == coinSays) {
     println("Congratulations! You're first up!")
-  } else {
-    println("Bad luck old chap!")
-    needlePlayer()
-  }
+  } else needlePlayer
 
-  val me = if (playersChoice == coinSays) "O" else "X"
+  val me:Char = if (playersChoice == coinSays) 'O' else 'X'
+
   var game = new GameState
-  do {
+  while (!game.isWon && !game.isDraw) {
+    GameStatePrinter.show(game)
     if (game.toGo == me) {
       val myMove = GameStrategy.decideMove(game)
-      println("I'm going with ${myMove}")
+      println(s"I'm going with ${myMove}")
+      game = game.updated(myMove._1, myMove._2)
     } else {
       val playersMove = askPlayersMove()
+      try {
+        game = game.updated(playersMove._1, playersMove._2)
+      } catch {
+        case e: Exception => {
+          println("Invalid move " + e)
+        }
+      }
     }
+  }
 
-  } while (!game.hasWon('X' && !game.hasWon('O'))
+  GameStatePrinter.show(game)
+  if (game.hasWon(me)) {
+    println("I WON!!!")
+  } else if (game.isDraw) {
+    println("It's a DRAW! WHAT A DRAG!")
+  } else {
+    println("You won! That's not supposed to happen")
+  }
 
   //for (ch <- "OX"; if (game.hasWon(ch))) {
   //  println(s"$ch won!")
