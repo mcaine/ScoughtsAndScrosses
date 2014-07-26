@@ -20,8 +20,6 @@ object GameStrategy {
   def isWinningMove(game: GameState, move: (Int, Int)):Boolean = game.updated(move).isWon
 
   def decideMove(game: GameState): (Int, Int) = {
-    println("Deciding my move...")
-    println("all positions is " + allPositions)
     val possibleMoves = allPositions filter { move => isValidMove(game, move) }
     println("Possible Moves is " + possibleMoves)
     val winningMoves = possibleMoves filter { move => isWinningMove(game, move)}
@@ -30,7 +28,6 @@ object GameStrategy {
     } else if (possibleMoves.length == 1) {
       possibleMoves.head
     } else if (possibleMoves.length > 1) {
-
       val notTotallyStupidMoves = possibleMoves.filter {
         move => {
           val nextPosition:GameState = game.updated(move)
