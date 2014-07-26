@@ -2,48 +2,35 @@ package com.mikeycaine
 
 import com.mikeycaine.BoardParams._
 
+import scala.util.Random
+
 /**
  * Created by Mike on 25/07/2014.
  */
+class NoPossibleMoveException extends RuntimeException
+
 object GameStrategy {
+  type Move = (Int, Int)
 
-  object NoPossibleMoveException extends RuntimeException
-
-  def allPositions = {
-    for (
-      i <- 0 until SIZE;
-      j <- 0 until SIZE
-    ) yield (i,j)
-  }
-
-  def isValidMove(game: GameState, move: (Int, Int)) = game.isValidMove(move)
-  def isWinningMove(game: GameState, move: (Int, Int)):Boolean = game.updated(move).isWon
+  def isWinningMove(game: GameState, move: Move):Boolean = game.isValidMove(move) && game.updated(move).isWon
+  def validMovesForGame(game: GameState) = ALLMOVES.filter { game.isValidMove(_) }
+  def winningMovesForGame(game: GameState) = validMovesForGame(game).filter { isWinningMove(game, _)}
 
   def decideMove(game: GameState): (Int, Int) = {
-    val possibleMoves = allPositions filter { move => isValidMove(game, move) }
-    println("Possible Moves is " + possibleMoves)
-    val winningMoves = possibleMoves filter { move => isWinningMove(game, move)}
+    val validMoves = validMovesForGame(game)
+    if (validMoves.isEmpty) throw new NoPossibleMoveException
+    //println("Valid Moves is " + validMoves)
+    val winningMoves = winningMovesForGame(game)
     if (!winningMoves.isEmpty) {
-      winningMoves.head
-    } else if (possibleMoves.length == 1) {
-      possibleMoves.head
-    } else if (possibleMoves.length > 1) {
-      val notTotallyStupidMoves = possibleMoves.filter {
-        move => {
-          val nextPosition:GameState = game.updated(move)
-          val winningMovesForOpponent = allPositions.filter {
-            opponentsMove => isValidMove(nextPosition, opponentsMove) && isWinningMove(nextPosition, opponentsMove)
-          }
-          winningMovesForOpponent.isEmpty
-        }
-      }
-
+      winningMoves(Random.nextInt(winningMoves.size))
+    } else if (validMoves.length > 1) {
+      val notTotallyStupidMoves = validMoves.filter(move => winningMovesForGame(game.updated(move)).isEmpty)
       if (!notTotallyStupidMoves.isEmpty) {
-        println("Not totally stupid moves: " + notTotallyStupidMoves)
-        notTotallyStupidMoves.head
+        //println("Not totally stupid moves: " + notTotallyStupidMoves)
+        notTotallyStupidMoves(Random.nextInt(notTotallyStupidMoves.size))
       } else {
-        possibleMoves.head
+        validMoves(Random.nextInt(validMoves.size))
       }
-    } else throw NoPossibleMoveException
+    } else throw new NoPossibleMoveException
   }
 }

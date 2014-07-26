@@ -11,6 +11,7 @@ import scala.collection.immutable.VectorBuilder
 object BoardParams {
   val SIZE = 3
   val SPACE = ' '
+  val ALLMOVES = for (i <- 0 until SIZE; j <- 0 until SIZE) yield (i,j)
 }
 
 class SquareAlreadyOccupiedException extends RuntimeException
@@ -26,13 +27,10 @@ class Board (gameBoard: Vector[Vector[Char]]) {
   }
 
   def updated(address: (Int, Int), ch: Char):Board = updated(address._1, address._2, ch)
+
   def updated(x:Int, y:Int, ch: Char):Board = {
     checkArgs(x, y)
-    if (gameBoard(y)(x) != SPACE) {
-      //throw new IllegalArgumentException(s"Square at ($x, $y) is already set to " + gameBoard(x)(y))
-      throw new SquareAlreadyOccupiedException
-    }
-
+    if (gameBoard(y)(x) != SPACE) throw new SquareAlreadyOccupiedException
     val updatedBoard  = gameBoard.zipWithIndex.map {
       case (row, index:Int) => {
         if (index == y ) row updated(x, ch) else row

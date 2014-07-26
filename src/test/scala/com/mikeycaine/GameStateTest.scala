@@ -51,10 +51,8 @@ class GameStateTest extends FunSuite {
         |...
       """.stripMargin
     ), 'O')
+
     assert(!unwon.isWon)
-
-
-
   }
 
   test("hasWone works with the first column") {

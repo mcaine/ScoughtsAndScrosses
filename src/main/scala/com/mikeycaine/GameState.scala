@@ -1,6 +1,7 @@
 package com.mikeycaine
 
 import com.mikeycaine.GameStateParams._
+import com.mikeycaine.BoardParams._
 
 /**
  * Created by Mike on 25/07/2014.
@@ -10,8 +11,9 @@ object GameStateParams {
   def next(current: Char) = if (current == 'O') 'X' else 'O'
 }
 
+class NoWinnerYetException extends RuntimeException
+
 class GameState (val board: Board, val toGo: Char) {
-  class NoWinnerYetException extends RuntimeException
 
   if (!ALLOWED.contains(toGo)) {
     throw new IllegalArgumentException("Invalid character " + toGo)
@@ -42,7 +44,7 @@ class GameState (val board: Board, val toGo: Char) {
   def winner = if (hasWon('X')) 'X' else if (hasWon('O')) 'O' else throw new NoWinnerYetException
   def isWon = hasWon('X') || hasWon('O')
   def isDraw = if (isWon) false else {
-    val unfilledPositions = GameStrategy.allPositions.filter { case (x,y) => board(x,y) == ' '}
+    val unfilledPositions = ALLMOVES.filter { case (x,y) => board(x,y) == ' '}
     unfilledPositions isEmpty
   }
 }

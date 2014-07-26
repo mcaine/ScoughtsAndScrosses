@@ -24,7 +24,8 @@ object Main extends App {
   def askHeadsOrTails(): CoinToss = {
     var choice: Option[CoinToss] = None
     while (choice == None) {
-      val choiceText = Console.readLine("Heads or Tails?")
+      println("Heads or Tails?")
+      val choiceText = Console.readLine()
       val firstChar = if (choiceText.length > 0) choiceText.charAt(0).toUpper else ' '
       if (firstChar == 'H') {
         choice = Some(Heads)
@@ -36,19 +37,21 @@ object Main extends App {
     choice.get
   }
 
-  def askPlayersMove(): (Int,Int) = {
-    val MovePattern = """\(([012]),([012])\)""".r
+  def askPlayersMove(game: GameState): (Int,Int) = {
+    val MovePattern = """([012]),([012])""".r
     var move:Option[(Int, Int)] = None
     while (move == None) {
-      val moveText = Console.readLine("What move (x,y)?")
+      println("What move (eg 1,1)?")
+      val moveText = Console.readLine()
       moveText match {
-        case MovePattern(x,y) => {
-          move = Some((x.toInt,y.toInt))
+        case MovePattern(xs, ys) => {
+          val (x, y) = (xs.toInt, ys.toInt)
+          if (game.isValidMove(x, y)) move = Some((x, y)) else println ("Invalid move!")
         }
         case _ => println("I don't understand")
       }
     }
-    println("You chose " + move.get)
+    //println("You chose " + move.get)
     move.get
   }
 
@@ -85,13 +88,14 @@ object Main extends App {
 
   var game = new GameState
   while (!game.isWon && !game.isDraw) {
+    println
     GameStatePrinter.show(game)
     if (game.toGo == me) {
       val myMove = GameStrategy.decideMove(game)
       println(s"I'm going with ${myMove}")
       game = game.updated(myMove._1, myMove._2)
     } else {
-      val playersMove = askPlayersMove()
+      val playersMove = askPlayersMove(game)
       try {
         game = game.updated(playersMove._1, playersMove._2)
       } catch {
@@ -103,6 +107,7 @@ object Main extends App {
   }
 
   GameStatePrinter.show(game)
+
   if (game.hasWon(me)) {
     println("I WON!!!")
   } else if (game.isDraw) {
@@ -110,10 +115,5 @@ object Main extends App {
   } else {
     println("You won! That's not supposed to happen")
   }
-
-  //for (ch <- "OX"; if (game.hasWon(ch))) {
-  //  println(s"$ch won!")
-  //}
-
 }
 
