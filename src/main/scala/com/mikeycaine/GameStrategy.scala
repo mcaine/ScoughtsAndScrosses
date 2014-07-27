@@ -1,36 +1,44 @@
 package com.mikeycaine
-
 import com.mikeycaine.BoardParams._
-
+import scala.collection.mutable
 import scala.util.Random
+import collection.mutable.{Map, HashMap, Set}
 
 /**
  * Created by Mike on 25/07/2014.
  */
-class NoPossibleMoveException extends RuntimeException
 
-object GameStrategy {
+trait GameStrategy {
   type Move = (Int, Int)
 
-  def isWinningMove(game: GameState, move: Move):Boolean = game.isValidMove(move) && game.updated(move).isWon
-  def validMovesForGame(game: GameState) = ALLMOVES.filter { game.isValidMove(_) }
-  def winningMovesForGame(game: GameState) = validMovesForGame(game).filter { isWinningMove(game, _)}
+  class NoPossibleMoveException extends RuntimeException
 
-  def decideMove(game: GameState): (Int, Int) = {
-    val validMoves = validMovesForGame(game)
-    if (validMoves.isEmpty) throw new NoPossibleMoveException
-    //println("Valid Moves is " + validMoves)
-    val winningMoves = winningMovesForGame(game)
-    if (!winningMoves.isEmpty) {
-      winningMoves(Random.nextInt(winningMoves.size))
-    } else if (validMoves.length > 1) {
-      val notTotallyStupidMoves = validMoves.filter(move => winningMovesForGame(game.updated(move)).isEmpty)
-      if (!notTotallyStupidMoves.isEmpty) {
-        //println("Not totally stupid moves: " + notTotallyStupidMoves)
-        notTotallyStupidMoves(Random.nextInt(notTotallyStupidMoves.size))
-      } else {
-        validMoves(Random.nextInt(validMoves.size))
-      }
-    } else throw new NoPossibleMoveException
+  def validMovesForGame(game: GameState) = {
+    val possible = ALLMOVES.filter(game.isValidMove)
+    if (possible.nonEmpty) possible else throw new NoPossibleMoveException
+  }
+
+  def randomlyChooseOneOf[T](in: Seq[T]): T =
+    if (in.length == 0) throw new NoSuchElementException
+    else in(Random.nextInt(in.size))
+
+  def decideMove(game: GameState): Move
+}
+
+class SensibleStrategy extends GameStrategy {
+  def decideMove(game: GameState): Move = {
+    println("Deciding my move using SensibleStrategy...")
+
+    val treeString = new GameTree(game).toString
+    println(treeString)
+
+    val validMoves:Seq[Move] = validMovesForGame(game)
+    val (winners, nonWinners) = validMoves.partition(game.updated(_).isWon)
+    if (winners.nonEmpty) randomlyChooseOneOf(winners)
+    else {
+      val (draws, nonDraws) = nonWinners.partition(game.updated(_).isDraw)
+      if (draws.nonEmpty) randomlyChooseOneOf(draws)
+      else randomlyChooseOneOf(nonDraws)
+    }
   }
 }

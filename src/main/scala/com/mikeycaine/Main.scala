@@ -87,11 +87,12 @@ object Main extends App {
   val me:Char = if (playersChoice == coinSays) 'O' else 'X'
 
   var game = new GameState
+  val strategy = new SensibleStrategy
   while (!game.isWon && !game.isDraw) {
     println
     GameStatePrinter.show(game)
     if (game.toGo == me) {
-      val myMove = GameStrategy.decideMove(game)
+      val myMove = strategy.decideMove(game)
       println(s"I'm going with ${myMove}")
       game = game.updated(myMove._1, myMove._2)
     } else {

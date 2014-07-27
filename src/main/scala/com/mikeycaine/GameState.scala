@@ -15,6 +15,8 @@ class NoWinnerYetException extends RuntimeException
 
 class GameState (val board: Board, val toGo: Char) {
 
+  type Move = (Int, Int)
+
   if (!ALLOWED.contains(toGo)) {
     throw new IllegalArgumentException("Invalid character " + toGo)
   }
@@ -22,8 +24,9 @@ class GameState (val board: Board, val toGo: Char) {
   def this(ch: Char) = this(new Board(), ch)
   def this() = this('X')
 
-  def isValidMove(x:Int, y:Int) = board(x,y) == BoardParams.SPACE
+  def isValidMove(x:Int, y:Int) = board(x,y) == SPACE
   def isValidMove(address: (Int, Int)):Boolean = isValidMove(address._1, address._2)
+  def validMoves = ALLMOVES.filter(isValidMove(_))
 
   def updated(x:Int, y:Int) = new GameState(board.updated(x, y, toGo), next(toGo))
   def updated(address: (Int, Int)):GameState = updated(address._1, address._2)
@@ -44,7 +47,7 @@ class GameState (val board: Board, val toGo: Char) {
   def winner = if (hasWon('X')) 'X' else if (hasWon('O')) 'O' else throw new NoWinnerYetException
   def isWon = hasWon('X') || hasWon('O')
   def isDraw = if (isWon) false else {
-    val unfilledPositions = ALLMOVES.filter { case (x,y) => board(x,y) == ' '}
+    val unfilledPositions = ALLMOVES.filter { case (x,y) => board(x,y) != 'X' && board(x,y) != 'O'}
     unfilledPositions isEmpty
   }
 }

@@ -10,7 +10,7 @@ import scala.collection.immutable.VectorBuilder
 
 object BoardParams {
   val SIZE = 3
-  val SPACE = ' '
+  val SPACE = '.'
   val ALLMOVES = for (i <- 0 until SIZE; j <- 0 until SIZE) yield (i,j)
 }
 

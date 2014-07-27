@@ -153,4 +153,16 @@ class GameStateTest extends FunSuite {
     assert(state.hasWon('X'))
     assert(!state.hasWon('O'))
   }
+
+//  test("tree1") {
+//    var state = new GameState(new Board(
+//      """...
+//        |...
+//        |...
+//      """.stripMargin
+//    ), 'X')
+//
+//    //var printed: String = GameStrategy.printTree(GameStrategy.treeFor('O', state))
+//    println("TREE STATE:\n" + GameStrategy.treeFor('X', state))
+//  }
 }
