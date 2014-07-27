@@ -18,27 +18,9 @@ trait GameStrategy {
     if (possible.nonEmpty) possible else throw new NoPossibleMoveException
   }
 
-  def randomlyChooseOneOf[T](in: Seq[T]): T =
+  def pickOneOf[T](in: Seq[T]): T =
     if (in.length == 0) throw new NoSuchElementException
     else in(Random.nextInt(in.size))
 
   def decideMove(game: GameState): Move
-}
-
-class SensibleStrategy extends GameStrategy {
-  def decideMove(game: GameState): Move = {
-    println("Deciding my move using SensibleStrategy...")
-
-    val treeString = new GameTree(game).toString
-    println(treeString)
-
-    val validMoves:Seq[Move] = validMovesForGame(game)
-    val (winners, nonWinners) = validMoves.partition(game.updated(_).isWon)
-    if (winners.nonEmpty) randomlyChooseOneOf(winners)
-    else {
-      val (draws, nonDraws) = nonWinners.partition(game.updated(_).isDraw)
-      if (draws.nonEmpty) randomlyChooseOneOf(draws)
-      else randomlyChooseOneOf(nonDraws)
-    }
-  }
 }

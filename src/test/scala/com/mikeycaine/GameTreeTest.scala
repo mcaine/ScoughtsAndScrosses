@@ -10,13 +10,13 @@ class GameTreeTest extends FunSuite {
     val game = new GameState(new Board(
       """XXO
         |XOO
-        |.OX
+        |...
       """.stripMargin
     ), 'X')
 
     val tree = new GameTree(game)
-    tree.visit(node => println(node.toString))
-    //assert(treeString == "(0,2) -> WIN")
+    //val pruned = tree.pruned()
+
   }
 
 //  test("GameTree2") {
