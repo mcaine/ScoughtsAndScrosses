@@ -7,26 +7,23 @@ package com.mikeycaine
  * Created by Mike on 25/07/2014.
  */
 
+import com.mikeycaine.BoardParams._
+
 class NoWinnerYetException extends RuntimeException
+class NoPossibleMoveException extends RuntimeException
 
 class GameState (val board: Board, val toGo: Char){
-  import com.mikeycaine.BoardParams._
-
-  val ALLOWED = List('X','O')
-  def next(current: Char) = if (current == 'O') 'X' else 'O'
-
-  //type Move = (Int, Int)
-
-  if (!ALLOWED.contains(toGo)) {
+  if (!List('X','O').contains(toGo)) {
     throw new IllegalArgumentException("Invalid character " + toGo)
   }
 
   def this(ch: Char) = this(new Board(), ch)
   def this() = this('X')
 
+  def next(current: Char) = if (current == 'O') 'X' else 'O'
   def isValidMove(x:Int, y:Int) = board(x,y) == SPACE
   def isValidMove(address: (Int, Int)):Boolean = isValidMove(address._1, address._2)
-  def validMoves = ALLMOVES.filter(isValidMove(_))
+  def validMoves = ALLMOVES.filter(isValidMove)
 
   def updated(x:Int, y:Int) = new GameState(board.updated(x, y, toGo), next(toGo))
   def updated(address: (Int, Int)):GameState = updated(address._1, address._2)
@@ -50,5 +47,4 @@ class GameState (val board: Board, val toGo: Char){
     val unfilledPositions = ALLMOVES.filter { case (x,y) => board(x,y) != 'X' && board(x,y) != 'O'}
     unfilledPositions.isEmpty
   }
-
 }

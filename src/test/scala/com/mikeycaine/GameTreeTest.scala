@@ -2,19 +2,37 @@ package com.mikeycaine
 
 import org.scalatest.FunSuite
 
+import scala.reflect.io.Path
+
 /**
  * Created by Mike on 27/07/2014.
  */
 class GameTreeTest extends FunSuite {
   test("GameTree1") {
+//    val game = new GameState(new Board(
+//      """XXO
+//        |XOO
+//        |...
+//      """.stripMargin
+//    ), 'X')
+
     val game = new GameState(new Board(
-      """XXO
-        |XOO
+      """...
+        |...
         |...
       """.stripMargin
     ), 'X')
 
-    val tree = new GameTree(game)
+
+
+
+
+
+    //println("Looking for wins")
+
+
+
+
     //val pruned = tree.pruned()
 
   }

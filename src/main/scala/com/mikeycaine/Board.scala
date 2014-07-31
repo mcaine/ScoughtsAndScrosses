@@ -14,6 +14,7 @@ object BoardParams {
   val SPACE = '.'
   def ALLMOVES = (for (i <- 0 until SIZE; j <- 0 until SIZE) yield (i,j)).toList
   type Move = (Int, Int)
+  type Path = List[Move]
 }
 
 class Board (gameBoard: Vector[Vector[Char]]) {

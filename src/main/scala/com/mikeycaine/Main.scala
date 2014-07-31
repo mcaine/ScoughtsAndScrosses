@@ -87,7 +87,6 @@ object Main extends App {
   val me:Char = if (playersChoice == coinSays) 'O' else 'X'
 
   var game = new GameState
-  //val strategy = new SensibleStrategy
   val strategy = new GoodStrategy
   while (!game.isWon && !game.isDraw) {
     println
