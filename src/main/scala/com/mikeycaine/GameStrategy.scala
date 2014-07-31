@@ -9,7 +9,8 @@ import collection.mutable.{Map, HashMap, Set}
  */
 
 trait GameStrategy {
-  type Move = (Int, Int)
+
+  //import BoardParams._
 
   class NoPossibleMoveException extends RuntimeException
 
@@ -23,4 +24,6 @@ trait GameStrategy {
     else in(Random.nextInt(in.size))
 
   def decideMove(game: GameState): Move
+
+  def name: String
 }

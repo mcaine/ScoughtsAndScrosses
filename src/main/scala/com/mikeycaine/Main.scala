@@ -93,6 +93,7 @@ object Main extends App {
     println
     GameStatePrinter.show(game)
     if (game.toGo == me) {
+      println("Deciding move using strategy: " + strategy.name)
       val myMove = strategy.decideMove(game)
       println(s"I'm going with ${myMove}")
       game = game.updated(myMove._1, myMove._2)

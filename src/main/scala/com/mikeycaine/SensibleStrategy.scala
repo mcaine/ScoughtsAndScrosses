@@ -5,9 +5,9 @@ package com.mikeycaine
  * Created by Mike on 27/07/2014.
  */
 class SensibleStrategy extends GameStrategy {
-  def decideMove(game: GameState): Move = {
-    println("Deciding my move using SensibleStrategy...")
+  import BoardParams._
 
+  def decideMove(game: GameState): Move = {
     val validMoves:Seq[Move] = validMovesForGame(game)
     val (winners, nonWinners) = validMoves.partition(game.updated(_).isWon)
     if (winners.nonEmpty) pickOneOf(winners)
@@ -17,4 +17,6 @@ class SensibleStrategy extends GameStrategy {
       else pickOneOf(nonDraws)
     }
   }
+
+  def name = "Sensible Strategy"
 }

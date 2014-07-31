@@ -27,7 +27,7 @@ class GameStateTest extends FunSuite {
   test("Can't set a square more than once") {
     var state = new GameState
     state = state.updated(0,0)
-    intercept[SquareAlreadyOccupiedException] {
+    intercept[PositionAlreadyOccupiedException] {
       state = state.updated(0, 0)
     }
   }

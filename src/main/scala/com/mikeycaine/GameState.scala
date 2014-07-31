@@ -1,21 +1,21 @@
 package com.mikeycaine
 
-import com.mikeycaine.GameStateParams._
-import com.mikeycaine.BoardParams._
+//import com.mikeycaine.GameStateParams._
+//import com.mikeycaine.Board
 
 /**
  * Created by Mike on 25/07/2014.
  */
-object GameStateParams {
-  val ALLOWED = List('X','O')
-  def next(current: Char) = if (current == 'O') 'X' else 'O'
-}
 
 class NoWinnerYetException extends RuntimeException
 
-class GameState (val board: Board, val toGo: Char) {
+class GameState (val board: Board, val toGo: Char){
+  import com.mikeycaine.BoardParams._
 
-  type Move = (Int, Int)
+  val ALLOWED = List('X','O')
+  def next(current: Char) = if (current == 'O') 'X' else 'O'
+
+  //type Move = (Int, Int)
 
   if (!ALLOWED.contains(toGo)) {
     throw new IllegalArgumentException("Invalid character " + toGo)
@@ -44,10 +44,11 @@ class GameState (val board: Board, val toGo: Char) {
     (board(0,2) == ch && board(1,1) == ch && board(2,0) == ch)
   )
 
-  def winner = if (hasWon('X')) 'X' else if (hasWon('O')) 'O' else throw new NoWinnerYetException
-  def isWon = hasWon('X') || hasWon('O')
-  def isDraw = if (isWon) false else {
+  def winner: Char = if (hasWon('X')) 'X' else if (hasWon('O')) 'O' else throw new NoWinnerYetException
+  def isWon: Boolean = hasWon('X') || hasWon('O')
+  def isDraw: Boolean = if (isWon) false else {
     val unfilledPositions = ALLMOVES.filter { case (x,y) => board(x,y) != 'X' && board(x,y) != 'O'}
-    unfilledPositions isEmpty
+    unfilledPositions.isEmpty
   }
+
 }
