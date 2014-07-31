@@ -8,7 +8,6 @@ class GoodStrategy extends GameStrategy {
 
   def decideMove(game: GameState): Move = {
     val tree = new GameTree(game)
-    //val winningPaths:List[Path] = List()
 
     var winners: List[Path] = List()
     var draws: List[Path] = List()
@@ -16,7 +15,7 @@ class GoodStrategy extends GameStrategy {
 
     tree.breadthFirst(node => {
       node match {
-        case Leaf(path: List[Path], result, _) => result match {
+        case Leaf(path, result, _) => result match {
           case Win => {winners = winners :+ path}
           case Draw => { draws = draws :+ path }
           case Loss => { losses = losses :+ path }
@@ -26,10 +25,7 @@ class GoodStrategy extends GameStrategy {
     })
 
     val allPaths = winners ++ draws ++ losses
-
-    val firstPath = allPaths(0)
-    val move = firstPath(0)
-    move
+    allPaths(0)(0)
   }
 
   def name = "Good Strategy"
