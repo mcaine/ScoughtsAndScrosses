@@ -18,5 +18,5 @@ class SensibleStrategy extends GameStrategy {
     }
   }
 
-  def name = "Sensible Strategy"
+  val name = "Sensible Strategy"
 }
