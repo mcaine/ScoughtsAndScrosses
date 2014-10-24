@@ -88,7 +88,7 @@ object Main extends App {
 
   var game = new GameState
   //val strategy = new GoodStrategy
-  val strategy: GameStrategy = new SensibleStrategy
+  val strategy: GameStrategy = new MiniMaxStrategy
   while (!game.isWon && !game.isDraw) {
     println
     GameStatePrinter.show(game)
