@@ -13,7 +13,7 @@ class MiniMaxStrategy extends GameStrategy {
     } else if (game.isWon) {
       if (game.winner == player) (100, None) else (-100, None)
     } else {
-      val movesWithScores: Seq[(Int, Option[Move])] = game.validMoves map {
+      val movesWithScores = game.validMoves map {
         move => {
           val (score, _) = miniMax(player, level - 1, game.updated(move))
           (score, Some(move))
@@ -23,7 +23,7 @@ class MiniMaxStrategy extends GameStrategy {
       val allScores = movesWithScores map (_._1)
       val chosenScore = if (game.toGo == player) allScores.max else allScores.min
       val possibleChoices = movesWithScores.filter (_._1 == chosenScore)
-      possibleChoices(new Random().nextInt(possibleChoices.length));
+      possibleChoices(new Random().nextInt(possibleChoices.length))
     }
   }
 
